@@ -3,16 +3,28 @@ import StringIO
 from HTMLParser import HTMLParser
 
 class GeoParser(HTMLParser):
-    def handle_starttag(self, tag, attrs):
-	if tag == "table":
-        	print "Encountered a start tag:", tag
-    def handle_endtag(self, tag):
-	if tag == "table":
-        	print "Encountered an end tag :", tag
-    #def handle_data(self, data):
-        #print "Encountered some data  :", data
- 
+	def __init__(self):
+		HTMLParser.__init__(self)
+		self.in_td = False
+		self.current_row = []
+		self.recording = False
 
+	def handle_starttag(self, tag, attrs):
+		for name, value in attrs:
+			if name == "action" and value == "show_activity_history.php#trips":
+				self.recording = True
+		if tag == "td":
+			self.in_td = True
+	def handle_endtag(self, tag):
+		if tag == "tr" and self.recording == True:
+        		print self.current_row
+			self.current_row = []
+		if self.recording == True and tag == "table":
+			self.recording = False
+	def handle_data(self, data):
+		if self.in_td:
+			self.current_row.append(data)
+ 
 parser = GeoParser()
 html = StringIO.StringIO()
 
