@@ -17,7 +17,7 @@ class GeoParser(HTMLParser):
 			self.in_td = True
 	def handle_endtag(self, tag):
 		if tag == "tr" and self.recording == True:
-        		print self.current_row
+        		print '\t'.join(self.current_row)
 			self.current_row = []
 		if self.recording == True and tag == "table":
 			self.recording = False
