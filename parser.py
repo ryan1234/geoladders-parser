@@ -13,7 +13,7 @@ class GeoParser(HTMLParser):
 		for name, value in attrs:
 			if name == "action" and value == "show_activity_history.php#trips":
 				self.recording = True
-		if tag == "td":
+		if tag == "td" and self.recording == True:
 			self.in_td = True
 	def handle_endtag(self, tag):
 		if tag == "tr" and self.recording == True:
@@ -22,7 +22,7 @@ class GeoParser(HTMLParser):
 		if self.recording == True and tag == "table":
 			self.recording = False
 	def handle_data(self, data):
-		if self.in_td:
+		if self.in_td and self.recording == True:
 			self.current_row.append(data)
  
 parser = GeoParser()
